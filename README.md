@@ -19,7 +19,8 @@ You can pass a file path to read and decode or decode a string directly.
 
 **Base64**
 
-- By default, this only matches base64 strings that are 32 characters in length (not including padding)
+- By default, this only matches base64 strings that are at least 32 characters in length (not including padding). This
+is an effort to keep noise down.
 - You can change via the API directly or you can use the `-m` switch.
 ```bash
 

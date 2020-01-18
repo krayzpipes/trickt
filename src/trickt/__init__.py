@@ -1,4 +1,4 @@
-"""Search data for trickiness."""
+"""Search data for obfuscation and trickiness."""
 
 __version__ = "0.1.0"
 
@@ -6,7 +6,6 @@ __version__ = "0.1.0"
 import argparse
 import base64
 import binascii
-import pathlib
 import re
 import urllib.parse
 
@@ -15,7 +14,7 @@ REGEX_CHR_STRING = br"(chr\(.+chr\([0-9]+\))"
 REGEX_CHR_CODE = br"([0-9]+)"
 REGEX_ESCAPED_CHARACTERS_STRING = br"(\\[xu].+\\[xu][0-9a-fA-F]+)"
 REGEX_ESCAPED_CHARACTERS_CHAR = br"(\\[xu][0-9a-zA-Z]{2,4})"
-_REGEX_B64_STRING = br"([0-9a-zA-Z\+/]{%s,}[=]{0,2})"
+_REGEX_B64_STRING = br"([0-9a-zA-Z\+\\]{%s,}[=]{0,2})"
 REGEX_B64_STRING = _REGEX_B64_STRING % br"32"
 REGEX_URL_ENCODED = br"^.*%[0-9a-fA-F]{2}.*$"
 
@@ -33,13 +32,16 @@ COMPILED_URL_ENCODED = re.compile(REGEX_URL_ENCODED)
 ## Functions to find trickiness in data ##
 ##########################################
 
-def url_encoded(content, encoding='utf-8', string_regex=COMPILED_URL_ENCODED,**kwargs):
+
+def url_encoded(content, encoding="utf-8", string_regex=COMPILED_URL_ENCODED, **kwargs):
+    """Decodes url encoded strings"""
     try:
         url_encoded = string_regex.search(content).group()
     except AttributeError:
         return []
     unquoted = urllib.parse.unquote(url_encoded.decode(encoding))
-    return [unquoted.encode(encoding)]
+    return [unquoted.encode(encoding).strip()]
+
 
 def code_point(
     content, string_regex=COMPILED_CHR_STRING, char_regex=COMPILED_CHR_CODE, **kwargs
@@ -53,7 +55,9 @@ def code_point(
     matches = string_regex.findall(content)
     for match in matches:
         code_points = char_regex.findall(match)
-        found.append(b"".join([bytes(chr(int(c)), 'utf-8') for c in code_points]).strip())
+        found.append(
+            b"".join([bytes(chr(int(c)), "utf-8") for c in code_points]).strip()
+        )
     return found
 
 
@@ -87,6 +91,8 @@ def base64_decode(
     Base64 strings and are 32 characters in length or more. You can
     override this by passing in 'minimum_length'.
 
+    #NOTE: Minimum length does include padding in the calculation.
+
     Note that you take a performance hit using the 'minimum_length'
     key word argument as it is complied with each execution of the
     function. Keeping track of your own compiled regex and passing
@@ -94,9 +100,8 @@ def base64_decode(
     once) is much faster."""
 
     if minimum_length is not None:
-        _interpol = _REGEX_B64_STRING % str(minimum_length)
+        _interpol = _REGEX_B64_STRING % str(minimum_length).encode("utf-8")
         string_regex = re.compile(_interpol)
-
     found = []
     matches = string_regex.findall(content)
     for match in matches:
@@ -119,14 +124,15 @@ BAG_O_TRICKS = {
 
 
 def result_is_empty(result):
+    """Return True/False if there are no results."""
     for trick in result:
-        if trick != 'url_encoded':
+        if trick != "url_encoded":
             if result[trick]:
                 return False
     return True
 
 
-def all_tricks(content, minimum_length=None, depth=0, parent_type=None, **kwargs):
+def all(content, minimum_length=None, depth=0, parent_type=None, **kwargs):
     """Return a dictionary of results from all the tricks.
 
     This includes searching child values to make sure tricks aren't
@@ -137,19 +143,16 @@ def all_tricks(content, minimum_length=None, depth=0, parent_type=None, **kwargs
     for trick_name, trick in BAG_O_TRICKS.items():
 
         deobfuscated_strings = trick(content, minimum_length=minimum_length)
-        print(f"{trick_name}")
-        print(deobfuscated_strings)
-
         result[trick_name] = []
 
         # Unquoting a string that doesn't need unquoting will return
         # the same string. We don't want to unquote a string forever.
-        if (trick_name == 'url_encoded') and (parent_type == 'url_encoded'):
+        if (trick_name == "url_encoded") and (parent_type == "url_encoded"):
             continue
 
         for string_ in deobfuscated_strings:
             # Recursively look for more trickiness...
-            child_result = all_tricks(
+            child_result = all(
                 string_,
                 minimum_length=minimum_length,
                 depth=(depth + 1),
@@ -157,17 +160,16 @@ def all_tricks(content, minimum_length=None, depth=0, parent_type=None, **kwargs
             )
 
             _value = {
-                'value': string_,
-                'depth': depth,
-                'child': child_result,
+                "value": string_,
+                "depth": depth,
+                "child": child_result,
             }
 
             # There are plenty of benign strings that could be unurl_encoded.
             # If we tried to keep all of them, there would be too much
             # noise. So if the unurl_encoded value does not match any other
             # trick, then don't keep it for the output.
-            print(result_is_empty(child_result))
-            if trick_name == 'url_encoded' and result_is_empty(child_result):
+            if trick_name == "url_encoded" and result_is_empty(child_result):
                 continue
 
             result[trick_name].append(_value)
@@ -191,24 +193,31 @@ class Term:
 
 
 def print_lines(num, result, original=None, depth=0):
+    """Recursivley print results for current line number."""
     for trick_type, values in result.items():
         for value in values:
-            print_line(num, trick_type, value['value'], original=original, depth=depth)
-            print_lines(num, value['child'], depth=(depth + 1))
+            print_line(num, trick_type, value["value"], original=original, depth=depth)
+            print_lines(num, value["child"], depth=(depth + 1))
 
 
 def print_line(num, type_, content, original=None, depth=0):
-    if isinstance(content, bytes):
-        content = content.decode('utf-8')
-    if isinstance(original, bytes):
-        original = original.decode('utf-8')
+    """Print the current result."""
 
     if depth == 0 and original:
-        print(f"\n{Term.BOLD}{Term.GREEN}line {num}::{Term.PURPLE}original:> {Term.END} {original}")
+        print(
+            f"\n{Term.BOLD}{Term.GREEN}line {num}::{Term.PURPLE}original:> {Term.END} {original}"
+        )
 
+    # Indent if this is a nested result.
     offset = "    " * (depth + 1)
-    print(f"{Term.BOLD}{Term.GREEN}{offset}|\n{offset}|--decoded_{Term.PURPLE}{type_}> {Term.END} {content}")
+    print(
+        f"{Term.BOLD}{Term.GREEN}{offset}|\n{offset}|--decoded_{Term.PURPLE}{type_}> {Term.END} {content}"
+    )
 
+
+#################
+## CLI PROGRAM ##
+#################
 
 
 def parse_args():
@@ -231,20 +240,21 @@ def main():
     startup_message = "Searching string for trickiness..."
 
     try:
-        if pathlib.Path(args.target).exists():
-            startup_message = f"Searching file '{args.target}' for trickiness..."
-            target = open(args.target, "rb")
-    # OSError if file name is too long, so assume its a string.
+        target = open(args.target, "rb")
     except OSError:
+        # File name too long or file not found.
+        # Assume target is just a string.
         pass
+    else:
+        startup_message = f"Searching file '{args.target}' for trickiness..."
 
     print(f"\n{Term.PURPLE}{startup_message}{Term.END}")
 
     for index, line in enumerate(target):
-        result_dict = all_tricks(line, minimum_length=args.minimum_length)
+        result_dict = all(line, minimum_length=args.minimum_length)
         line_num = index + 1
         print_lines(line_num, result_dict, original=line)
-        #for trick, result_list in result_dict.items():
+        # for trick, result_list in result_dict.items():
         #    for result in result_list:
         #        print_lines(line_num, result)
 

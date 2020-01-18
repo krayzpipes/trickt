@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2019-?-?
+## [0.1.0] - 2019-01-18
 ### Added
 - Identify and decode code points.
 - Identify and decode base64.
@@ -24,4 +24,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - None
 
 [Unreleased]: https://unreleased_compare_goes_here
-[0.1.0]: https://released_compare_goes_here
+[0.1.0]: https://github.com/krayzpipes/trickt/tree/ac7fe445b2954b8e1109ce2a4411ee40b8b52ac1

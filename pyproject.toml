@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "trickt"
-version = "0.1.0"
+version = "0.1.1"
 description = "Search data for trickiness and obfuscation."
 authors = ["krayzpipes <kylepiper29@gmail.com>"]
 license = "Apache-2.0"

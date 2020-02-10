@@ -204,15 +204,27 @@ def decode(content, encoding):
         return content
 
 
-def print_lines(num, result, original=None, depth=0, pretty=False, encoding='utf-8'):
+def print_lines(num, result, original=None, depth=0, pretty=False, encoding="utf-8"):
     """Recursively print results for current line number."""
     for trick_type, values in result.items():
         for value in values:
-            print_line(num, trick_type, value["value"], original=original, depth=depth, pretty=pretty, encoding=encoding)
-            print_lines(num, value["child"], depth=(depth + 1), pretty=pretty, encoding=encoding)
+            print_line(
+                num,
+                trick_type,
+                value["value"],
+                original=original,
+                depth=depth,
+                pretty=pretty,
+                encoding=encoding,
+            )
+            print_lines(
+                num, value["child"], depth=(depth + 1), pretty=pretty, encoding=encoding
+            )
 
 
-def print_line(num, type_, content, original=None, depth=0, pretty=False, encoding='utf-8'):
+def print_line(
+    num, type_, content, original=None, depth=0, pretty=False, encoding="utf-8"
+):
     """Print the current result."""
 
     if pretty:
@@ -247,14 +259,14 @@ def parse_args():
     parser.add_argument(
         "-p",
         "--pretty",
-        action='store_true',
+        action="store_true",
         help="Decode string and try to pretty print it.",
     )
     parser.add_argument(
         "-e",
         "--encoding",
-        default='utf-8',
-        help="Specify the encoding of the string. Default is 'utf-8'"
+        default="utf-8",
+        help="Specify the encoding of the string. Default is 'utf-8'",
     )
     parser.add_argument("target", help="File path or a string to parse")
 
@@ -281,7 +293,13 @@ def main():
     for index, line in enumerate(target):
         result_dict = all(line, minimum_length=args.minimum_length)
         line_num = index + 1
-        print_lines(line_num, result_dict, original=line, pretty=args.pretty, encoding=args.encoding)
+        print_lines(
+            line_num,
+            result_dict,
+            original=line,
+            pretty=args.pretty,
+            encoding=args.encoding,
+        )
 
     if not isinstance(target, list):
         target.close()

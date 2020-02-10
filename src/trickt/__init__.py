@@ -1,6 +1,6 @@
 """Search data for obfuscation and trickiness."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 import argparse
@@ -192,16 +192,32 @@ class Term:
     END = "\033[0m"
 
 
-def print_lines(num, result, original=None, depth=0):
-    """Recursivley print results for current line number."""
+def decode(content, encoding):
+    """Return a decoded or original string"""
+    if content is None:
+        return content
+
+    try:
+        return content.decode(encoding)
+    except Exception as e:
+        print(f"{Term.YELLOW}!!! Unable to decode as '{encoding}': {e} !!!{Term.END}")
+        return content
+
+
+def print_lines(num, result, original=None, depth=0, pretty=False, encoding='utf-8'):
+    """Recursively print results for current line number."""
     for trick_type, values in result.items():
         for value in values:
-            print_line(num, trick_type, value["value"], original=original, depth=depth)
-            print_lines(num, value["child"], depth=(depth + 1))
+            print_line(num, trick_type, value["value"], original=original, depth=depth, pretty=pretty, encoding=encoding)
+            print_lines(num, value["child"], depth=(depth + 1), pretty=pretty, encoding=encoding)
 
 
-def print_line(num, type_, content, original=None, depth=0):
+def print_line(num, type_, content, original=None, depth=0, pretty=False, encoding='utf-8'):
     """Print the current result."""
+
+    if pretty:
+        original = decode(original, encoding)
+        content = decode(content, encoding)
 
     if depth == 0 and original:
         print(
@@ -228,6 +244,18 @@ def parse_args():
         default=None,
         help="Minimum length of Base64 match to decode. The higher the minimum, the less junk output Default is 32.",
     )
+    parser.add_argument(
+        "-p",
+        "--pretty",
+        action='store_true',
+        help="Decode string and try to pretty print it.",
+    )
+    parser.add_argument(
+        "-e",
+        "--encoding",
+        default='utf-8',
+        help="Specify the encoding of the string. Default is 'utf-8'"
+    )
     parser.add_argument("target", help="File path or a string to parse")
 
     return parser.parse_args()
@@ -253,10 +281,7 @@ def main():
     for index, line in enumerate(target):
         result_dict = all(line, minimum_length=args.minimum_length)
         line_num = index + 1
-        print_lines(line_num, result_dict, original=line)
-        # for trick, result_list in result_dict.items():
-        #    for result in result_list:
-        #        print_lines(line_num, result)
+        print_lines(line_num, result_dict, original=line, pretty=args.pretty, encoding=args.encoding)
 
     if not isinstance(target, list):
         target.close()

